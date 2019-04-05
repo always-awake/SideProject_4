@@ -28,22 +28,29 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Authentication
+AUTH_USER_MODEL = 'users.User'
+
 
 # Application definition
-
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'cars.apps.CarsConfig', # cars app
-    'users.apps.UsersConfig', # users app
-
+]
+THIRD_PARTY_APPS = [
     'rest_framework', #django restframework
 ]
+LOCAL_APPS = [
+    'cars.apps.CarsConfig', # cars app
+    'users.apps.UsersConfig', # users app
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
