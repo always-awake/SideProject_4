@@ -9,6 +9,8 @@ name = "pypi"
 
 django = "*"
 pillow = "*"
+"psycopg2" = "*"
+djangorestframework = "*"
 
 
 [dev-packages]
