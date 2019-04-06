@@ -43,10 +43,19 @@ class Car(TimeStampedModel):
     mileage = models.IntegerField()
     address = models.CharField(max_length=100)
     status = models.CharField(max_length=80, choices=STATUS_CHOICES, null=True, default='waiting')
-    auction_start_time = models.DateTimeField(auto_now=False, auto_now_add=False)
+    auction_start_time = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.id} - {self.brand}/{self.car_model}'
+        return f'{self.id} - {self.brand}/{self.model}'
     
     class Meta:
         ordering = ['-auction_start_time']
+
+    
+class Image(TimeStampedModel):
+    """ Image Model """
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='images')
+    represent = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.car.brand}/{self.car.model} - {self.represent}'
