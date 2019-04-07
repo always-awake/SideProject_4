@@ -15,9 +15,13 @@ class CarAPIView(APIView):
 
     def get(self, request, car_id, format=None):
         found_car = get_object_or_404(models.Car, id=car_id)
-        serializer = serializers.CarDetailOngingSerializer(found_car)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
-
+        if found_car.status == 'ongoing':
+            serializer = serializers.CarDetailOngingSerializer(found_car)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        elif found_car.status == 'end':
+            serializer = serializers.CarDetailEndSerializer(found_car)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+            
     def post(self, request, format=None):
         #user = request.user
         # 이후 변경 필요
@@ -42,6 +46,5 @@ class CarAPIView(APIView):
         forty_eight_hour_later = now + datetime.timedelta(hours=48)
         forty_eight_hour_later.replace(tzinfo=KST)
         found_car.auction_end_time = forty_eight_hour_later
-
         found_car.save()
         return Response(status=status.HTTP_200_OK)
