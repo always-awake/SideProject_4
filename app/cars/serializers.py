@@ -12,7 +12,7 @@ class ImageSerializer(serializers.ModelSerializer):
         )
 
 
-class CarSerializer(serializers.HyperlinkedModelSerializer):
+class CarSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
@@ -25,6 +25,7 @@ class CarSerializer(serializers.HyperlinkedModelSerializer):
             'year',
             'fuel_type',
             'transmission_type',
+            'color',
             'mileage',
             'address',
             'images',
@@ -36,3 +37,36 @@ class CarSerializer(serializers.HyperlinkedModelSerializer):
         for image in images:
             models.Image.objects.create(car=car, image=image)
         return car
+
+
+class CarDetailOngingSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Car
+        fields = (
+            'status',
+            'id',
+            'time_remaining',
+            'detail_car_year',
+            'detail_car_mileage',
+            'detail_car_info',
+            'address',
+            'images',
+        )
+
+
+class CarDetailEndSerializer(serializers.ModelSerializer):
+    images = ImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Car
+        fields = (
+            'status',
+            'id',
+            'detail_car_year',
+            'detail_car_mileage',
+            'detail_car_info',
+            'address',
+            'images',
+        )
