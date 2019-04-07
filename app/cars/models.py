@@ -54,8 +54,9 @@ class Car(TimeStampedModel):
     
 class Image(TimeStampedModel):
     """ Image Model """
+    image = models.ImageField(upload_to='cars', null=True)
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='images')
-    represent = models.BooleanField(default=False)
+    # represent = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.car.brand}/{self.car.model} - {self.represent}'
+        return f'{self.car.brand}/{self.car.model}'
