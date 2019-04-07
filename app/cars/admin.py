@@ -26,3 +26,11 @@ class CarAdmin(admin.ModelAdmin):
     list_display_links = (
         'id',
     )
+
+@admin.register(models.Image)
+class ImageAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'id',
+        'car',
+    )
