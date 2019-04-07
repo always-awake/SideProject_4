@@ -9,6 +9,7 @@ class CarAdmin(admin.ModelAdmin):
         'id',
         'status',
         'auction_start_time',
+        'auction_end_time',
         'owner',
         'brand',
         'kind',
