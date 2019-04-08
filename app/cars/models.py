@@ -31,7 +31,7 @@ class Car(TimeStampedModel):
 
     STATUS_CHOICES = (
         ('waiting', 'Waiting'),
-        ('onging', 'Onging'),
+        ('ongoing', 'Ongoing'),
         ('end', 'End'),
     )
 
@@ -63,25 +63,37 @@ class Car(TimeStampedModel):
 
     @property
     def time_remaining(self):
-        KST = timezone('Asia/Seoul')
-        how_long = self.auction_end_time - datetime.datetime.now().replace(tzinfo=KST)
-        days, seconds = how_long.days, how_long.seconds
-        hours = days * 24 + seconds // 3600
-        mins = (seconds % 3600) // 60
-        seconds = seconds % 60
-        return f'{hours}:{mins}:{seconds}'
+        if self.status == 'ongoing':
+            KST = timezone('Asia/Seoul')
+            how_long = self.auction_end_time - datetime.datetime.now().replace(tzinfo=KST)
+            days, seconds = how_long.days, how_long.seconds
+            hours = days * 24 + seconds // 3600
+            mins = (seconds % 3600) // 60
+            seconds = seconds % 60
+            return f'{hours}:{mins}:{seconds}'
+        else: 
+            return None
+    
+    @property
+    def representative_image(self):
+        return self.images.all().get(represent=True)
+
+    @property
+    def car_list_mileage_ten_thousand(self):
+        return f'{self.mileage/10000}만km'
 
     def __str__(self):
         return f'{self.id} - {self.brand}/{self.model}'
     
     class Meta:
-        ordering = ['-auction_end_time']
+        ordering = ['-auction_start_time']
 
     
 class Image(TimeStampedModel):
     """ Image Model """
-    image = models.ImageField(upload_to=f'cars/{datetime.datetime.today()}', null=True)
+    image = models.ImageField(upload_to=f'cars/{datetime.datetime.now().strftime("%Y-%m-%d")}', null=True)
     car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='images')
+    represent = models.BooleanField(default=False, null=True)
 
     def __str__(self):
         return f'{self.car.brand}/{self.car.model}'
