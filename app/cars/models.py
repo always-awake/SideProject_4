@@ -79,7 +79,7 @@ class Car(TimeStampedModel):
         return self.images.all().get(represent=True)
 
     @property
-    def car_list_mileage_ten_thousand(self):
+    def car_list_mileage(self):
         return f'{self.mileage/10000}만km'
 
     def __str__(self):

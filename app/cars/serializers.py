@@ -77,6 +77,6 @@ class CarListSerializer(serializers.ModelSerializer):
             'kind',
             'model',
             'detail_car_year',
-            'car_list_mileage_ten_thousand',
+            'car_list_mileage',
             'address',
         )
