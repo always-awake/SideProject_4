@@ -35,13 +35,11 @@ class CarAPIView(APIView):
         found_car.status = 'ongoing'
 
         KST = pytz.timezone('Asia/Seoul')
-        now = datetime.datetime.now()
-        now.replace(tzinfo=KST)
+        now = datetime.datetime.now().replace(tzinfo=KST)
         found_car.auction_start_time = now
 
         forty_eight_hour_later = now + datetime.timedelta(hours=48)
-        forty_eight_hour_later.replace(tzinfo=KST)
-        found_car.auction_end_time = forty_eight_hour_later
+        found_car.auction_end_time = forty_eight_hour_later.replace(tzinfo=KST)
         found_car.save()
         return Response(status=status.HTTP_200_OK)
 
