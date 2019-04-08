@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -48,6 +49,10 @@ class CarListAPIView(APIView):
 
     def get(self, request, format=None):
         cars = models.Car.objects.filter(Q(status='ongoing') | Q(status='end'))
+        paginator = Paginator(cars, 16)
+        page = request.GET.get('page')
+        print(page)
+        cars = paginator.get_page(page)
         serializer = serializers.CarListSerializer(cars, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
         
