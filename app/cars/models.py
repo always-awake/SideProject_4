@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.db import models
 import datetime
 from pytz import timezone
+
 
 
 class TimeStampedModel(models.Model):
@@ -12,22 +14,51 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+
 class Brand(TimeStampedModel):
     """ Brand Model """
     name = models.CharField(max_length=50)
+
+    @property
+    def car_count(self):
+        car_count = 0
+        kinds = self.kinds.all()
+        for kind in kinds:
+            car_count += kind.car_count 
+        return car_count
+
+    def __str__(self):
+        return f'{self.name} - {self.car_count}'
 
 
 class Kind(TimeStampedModel):
     """ Kind Model """
     name = models.CharField(max_length=50)
-    brand = models.ForeiginKey(Brand, related_name='kinds', on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, related_name='kinds', on_delete=models.CASCADE)
+
+    @property
+    def car_count(self):
+        car_count = 0
+        models = self.models.all()
+        for model in models:
+            car_count += model.car_count 
+        return car_count
+
+    def __str__(self):
+        return f'{self.name} - {self.car_count}'
 
 
 class Model(TimeStampedModel):
     """ Model Model """
     name = models.CharField(max_length=50)
     kind = models.ForeignKey(Kind, related_name='models', on_delete=models.CASCADE)
+
+    @property
+    def car_count(self):
+        return self.cars.all().count()
     
+    def __str__(self):
+        return f'{self.name} - {self.car_count}'
 
 
 class Car(TimeStampedModel):
@@ -65,12 +96,20 @@ class Car(TimeStampedModel):
     auction_end_time = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True)
 
     @property
+    def brand(self):
+        return self.model.kind.brand
+    
+    @property
+    def kind(self):
+        return self.model.kind
+
+    @property
     def car_detail_year(self):
         return f'{self.year.strftime("%Y-%m")} ({self.year.strftime("%Y")}년형)'
 
     @property
     def car_detail_mileage(self):
-        return f'{self.mileage}km'
+        return f'{intcomma(self.mileage)}km'
 
     @property
     def car_detail_info(self):
@@ -98,7 +137,7 @@ class Car(TimeStampedModel):
         return f'{self.mileage/10000}만km'
 
     def __str__(self):
-        return f'{self.id} - {self.brand}/{self.model}'
+        return f'{self.id}-{self.kind}/{self.model}'
     
     class Meta:
         ordering = ['-auction_start_time']
