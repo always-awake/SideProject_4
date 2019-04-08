@@ -50,15 +50,15 @@ class Car(TimeStampedModel):
     auction_end_time = models.DateTimeField(auto_now=False, auto_now_add=False, blank=True, null=True)
 
     @property
-    def detail_car_year(self):
+    def car_detail_year(self):
         return f'{self.year.strftime("%Y-%m")} ({self.year.strftime("%Y")}년형)'
 
     @property
-    def detail_car_mileage(self):
+    def car_detail_mileage(self):
         return f'{self.mileage}km'
 
     @property
-    def detail_car_info(self):
+    def car_detail_info(self):
         return f'{self.fuel_type}·{self.transmission_type}·{self.color}'
 
     @property

@@ -56,9 +56,9 @@ class CarDetailSerializer(serializers.ModelSerializer):
             'brand',
             'kind',
             'model',
-            'detail_car_year',
-            'detail_car_mileage',
-            'detail_car_info',
+            'car_detail_year',
+            'car_detail_mileage',
+            'car_detail_info',
             'address',
             'images',
         )
@@ -76,7 +76,7 @@ class CarListSerializer(serializers.ModelSerializer):
             'representative_image',
             'kind',
             'model',
-            'detail_car_year',
+            'car_detail_year',
             'car_list_mileage',
             'address',
         )
