@@ -13,6 +13,32 @@ class ImageSerializer(serializers.ModelSerializer):
         )
 
 
+class BrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Brand
+        fields = (
+            'id',
+            'name',
+            )
+
+
+class KindSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Kind
+        fields = (
+            'id',
+            'name',
+            )
+
+
+class ModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Model
+        fields = (
+            'id',
+            'name',
+        )
+
 class CarSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True, read_only=True)
 
@@ -20,9 +46,6 @@ class CarSerializer(serializers.ModelSerializer):
         model = models.Car
         fields = (
             'id',
-            'brand',
-            'kind',
-            'model',
             'year',
             'fuel_type',
             'transmission_type',
@@ -36,7 +59,6 @@ class CarSerializer(serializers.ModelSerializer):
         images = self.context.get('images')
         car = models.Car.objects.create(**validated_data)
         for image in images:
-            # 등록된 첫번째 이미지는 대표 이미지로 설정
             if not car.images.all(): 
                 models.Image.objects.create(car=car, image=image, represent=True)
             else: 
@@ -45,6 +67,9 @@ class CarSerializer(serializers.ModelSerializer):
 
 
 class CarDetailSerializer(serializers.ModelSerializer):
+    brand = BrandSerializer()
+    kind = KindSerializer()
+    model = ModelSerializer()
     images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
@@ -65,6 +90,8 @@ class CarDetailSerializer(serializers.ModelSerializer):
 
 
 class CarListSerializer(serializers.ModelSerializer):
+    kind = KindSerializer()
+    model = ModelSerializer()
     representative_image = ImageSerializer(read_only=True)
 
     class Meta:
