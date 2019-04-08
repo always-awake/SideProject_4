@@ -12,6 +12,23 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+class Brand(TimeStampedModel):
+    """ Brand Model """
+    name = models.CharField(max_length=50)
+
+
+class Kind(TimeStampedModel):
+    """ Kind Model """
+    name = models.CharField(max_length=50)
+    brand = models.ForeiginKey(Brand, related_name='kinds', on_delete=models.CASCADE)
+
+
+class Model(TimeStampedModel):
+    """ Model Model """
+    name = models.CharField(max_length=50)
+    kind = models.ForeignKey(Kind, related_name='models', on_delete=models.CASCADE)
+    
+
 
 class Car(TimeStampedModel):
     """ Car Model """
@@ -35,10 +52,8 @@ class Car(TimeStampedModel):
         ('end', 'End'),
     )
 
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='cars', on_delete=models.CASCADE)
-    brand = models.CharField(max_length=50)
-    kind = models.CharField(max_length=80, null=True)
-    model = models.CharField(max_length=80, null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='cars', on_delete=models.CASCADE)  
+    model = models.ForeignKey(Model, related_name='cars', on_delete=models.CASCADE)
     year = models.DateField(auto_now=False, auto_now_add=False)
     fuel_type = models.CharField(max_length=80, choices=FUEL_CHOICES, null=True)
     transmission_type = models.CharField(max_length=80, choices=TRANSMISSION_CHOICES, null=True)
