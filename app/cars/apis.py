@@ -1,7 +1,8 @@
-from rest_framework.views import APIView
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 import datetime
 from pytz import timezone
 import pytz
@@ -15,12 +16,7 @@ class CarAPIView(APIView):
 
     def get(self, request, car_id, format=None):
         found_car = get_object_or_404(models.Car, id=car_id)
-        if found_car.status == 'ongoing':
-            serializer = serializers.CarDetailOngingSerializer(found_car)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        elif found_car.status == 'end':
-            serializer = serializers.CarDetailEndSerializer(found_car)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
             
     def post(self, request, format=None):
         #user = request.user
@@ -36,7 +32,7 @@ class CarAPIView(APIView):
 
     def put(self, request, car_id, format=None):
         found_car = get_object_or_404(models.Car, id=car_id)
-        found_car.status = 'onging'
+        found_car.status = 'ongoing'
 
         KST = pytz.timezone('Asia/Seoul')
         now = datetime.datetime.now()
@@ -48,3 +44,12 @@ class CarAPIView(APIView):
         found_car.auction_end_time = forty_eight_hour_later
         found_car.save()
         return Response(status=status.HTTP_200_OK)
+
+
+class CarListAPIView(APIView):
+
+    def get(self, request, format=None):
+        cars = models.Car.objects.filter(Q(status='ongoing') | Q(status='end'))
+        serializer = serializers.CarListSerializer(cars, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        
