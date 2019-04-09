@@ -12,6 +12,8 @@ pillow = "*"
 djangorestframework = "*"
 openpyxl = "*"
 djangorestframework-jwt = "*"
+django-rest-auth = "*"
+django-allauth = "*"
 
 
 [dev-packages]
