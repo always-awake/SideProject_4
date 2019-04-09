@@ -58,6 +58,8 @@ class CarSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         images = self.context.get('images')
         car = models.Car.objects.create(**validated_data)
+        if len(images) < 5:
+            raise Exception("사진을 5장 이상 등록하셔야합니다.")  
         for image in images:
             if not car.images.all(): 
                 models.Image.objects.create(car=car, image=image, represent=True)
