@@ -8,7 +8,7 @@ import datetime
 import pytz
 
 from . import models, serializers
-from users.models import User  # 임시
+
 
 KST = pytz.timezone('Asia/Seoul')
 
@@ -34,9 +34,7 @@ class CarCreateView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        # user = request.user
-        # 이후 변경 필요
-        user = User.objects.get(id=1)
+        user = request.user
         car_images = request.FILES.getlist('car_images')
         if len(car_images) < 5:
             return Response(status=status.HTTP_400_BAD_REQUEST)
