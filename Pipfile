@@ -11,6 +11,7 @@ django = "*"
 pillow = "*"
 djangorestframework = "*"
 openpyxl = "*"
+djangorestframework-jwt = "*"
 
 
 [dev-packages]
