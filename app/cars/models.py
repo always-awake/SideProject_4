@@ -5,7 +5,6 @@ import datetime
 from pytz import timezone
 
 
-
 class TimeStampedModel(models.Model):
     """ Base Model """
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,7 +27,7 @@ class Brand(TimeStampedModel):
         return car_count
 
     def __str__(self):
-        return f'{self.name} - {self.car_count}'
+        return f'{self.name}'
 
 
 class Kind(TimeStampedModel):
@@ -45,7 +44,7 @@ class Kind(TimeStampedModel):
         return car_count
 
     def __str__(self):
-        return f'{self.name} - {self.car_count}'
+        return f'{self.name}'
 
 
 class Model(TimeStampedModel):
@@ -58,7 +57,7 @@ class Model(TimeStampedModel):
         return self.cars.all().count()
     
     def __str__(self):
-        return f'{self.name} - {self.car_count}'
+        return f'{self.name}'
 
 
 class Car(TimeStampedModel):
