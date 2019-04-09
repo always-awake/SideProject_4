@@ -42,7 +42,14 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 THIRD_PARTY_APPS = [
-    'rest_framework', #django restframework
+    'rest_framework', # REST framework
+    'rest_framework.authtoken', # 임
+    'rest_auth', # rest auth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration', # enable registration
+
 ]
 LOCAL_APPS = [
     'cars.apps.CarsConfig', # cars app
@@ -147,7 +154,14 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+REST_USE_JWT = True
+
+# login 시, email을 요구하지 않도록 설정
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+
+SITE_ID = 1
