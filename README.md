@@ -4,16 +4,17 @@
     - Header의 Authorization Key에 JWT <your_token>를 추가하여 request
     - ex) JWT eyJ0eXAiOiJKV1QiLCJh
     - 관련 문서: [Django REST framework JWT](http://getblimp.github.io/django-rest-framework-jwt/)
-
+    - 회원 가입 API 외에 모든 API는 Authenticate required
 ## API 목록
 * User
 * Car
 
 ### Signip(Registration)
 회원가입
-* URL
-`POST /diary/startchat/`
+- Request</br>
+`POST /users/registration/`
 
-    - Headers
-  Key: HASH
-  Value: SE69KdAOBIMtjS6kZovvrOcmn2hrzO2DlVih6u4o (유저 고유 Hash)
+  * Body
+    + **username**: HASH
+    + **password1**: 
+    + **password2**: 
