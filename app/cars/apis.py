@@ -27,11 +27,6 @@ def check_car_status(func):
 
 
 class CarCreateView(APIView):
-    # 유저가 처음 자동차를 등록할 때, 모델명 리스트 리턴
-    def get(self, request):
-        car_models = models.Model.objects.all()
-        serializer = serializers.ModelSerializer(car_models, many=True)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
         user = request.user
@@ -49,15 +44,17 @@ class CarCreateView(APIView):
 
     def put(self, request, car_id):
         found_car = get_object_or_404(models.Car, id=car_id, status='waiting')
-        found_car.status = 'ongoing'
+        if found_car.stats == 'waiting':
+            found_car.status = 'ongoing'
 
-        now = datetime.datetime.now().replace(tzinfo=KST)
-        found_car.auction_start_time = now
-        forty_eight_hour_later = now + datetime.timedelta(hours=48)
-        found_car.auction_end_time = forty_eight_hour_later.replace(tzinfo=KST)
-        found_car.save()
-        return Response(status=status.HTTP_200_OK)
-
+            now = datetime.datetime.now().replace(tzinfo=KST)
+            found_car.auction_start_time = now
+            forty_eight_hour_later = now + datetime.timedelta(hours=48)
+            found_car.auction_end_time = forty_eight_hour_later.replace(tzinfo=KST)
+            found_car.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class CarDetailView(APIView):
 
@@ -90,7 +87,6 @@ class CarListView(APIView):
         page = request.GET.get('page')
         cars = paginator.get_page(page)
         serializer = serializers.CarListSerializer(cars, many=True)
-        # serializer.data.update({'car_total_count':len(cars),})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
