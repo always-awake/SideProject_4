@@ -189,8 +189,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ## 차량 등록 API
 ### Car Create API
-> 자동차 등록 (차량이 등록되면 상태는 기본으로 승인 대기(status=waiting)입니다.)
-> model list는 'Model List 검색' API로 불러올 수 있음 (Model에 등록되지 않은 model로 Car 생성 불가)
+> 1. 자동차 등록 (차량이 등록되면 상태는 기본으로 승인 대기(status=waiting)입니다.)
+> 2. model list는 'Model List 검색' API로 불러올 수 있음 (Model에 등록되지 않은 model로 Car 생성 불가)
 - Requeast</br>
 `POST /cars/new/`
 
@@ -251,20 +251,20 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ```
 
 ## 경매 승인 API
-> car_id를 갖고 있는 Car 오브젝트가 있어야 하고, 해당 Car 오브젝트의 status의 값이 'waiting' 이어야 합니다.
-> superuser의 권한을 갖고 있어야 수행됩니다. 그 외의 유저가 request하면, UNAUTHORIZED 응답을 얻습니다.
+> 1. car_id를 갖고 있는 Car 오브젝트가 있어야 하고, 해당 Car 오브젝트의 status의 값이 'waiting' 이어야 합니다.
+> 2. superuser의 권한을 갖고 있어야 수행됩니다. 그 외의 유저가 request하면, UNAUTHORIZED 응답을 얻습니다.
 - Request</br>
 `PUT /cars/:Car_Id/approval/`
 
   * Header
     + **Authorization**: JWT <your_token>
 
-- Success Response</br>
+- Response</br>
 //status: HTTP 200 OK
 
 ## 차량 목록 API
 ### Car List API
-> 1. 기본적으로 status가 'ongoing(경매 진행)', 'end(경매 종료)'인 자동차(Car) 리스트를 '경매 시작 시간'을 기준으로 정렬하여 보여줍니다.
+> 1. 기본적으로 status가 'ongoing(경매 진행)' or 'end(경매 종료)'인 자동차(Car) 리스트를 '경매 시작 시간'을 기준으로 정렬하여 보여줍니다.
 > 2. model params가 존재한다면, 검색 필터(모델에 속한 Car), 순서(정순, 역순)에 맞는 자동차(Car) 리스트를 보여줍니다. 
 > 3. ordering params가 reverse 값을 갖고 있다면, 역순 리스트를 보여줍니다.
 > 4. 페이지네이션을 지원: 한 페이지에 최대 16개의 자동차(Car)을 보여줍니다. page params에 원하는 페이지 번호를 입력하여 요청합니다.
@@ -281,9 +281,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
     + **Authorization**: JWT <your_token>
 
 - Response</br>
-* Params
-  - page:1
-  - model: sm5
+  * Params
+    - page:1
+    - model: sm5
+    
 //status: HTTP 200 OK
 ```
 [
