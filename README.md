@@ -1,11 +1,15 @@
 API Documentation
 =================
+### **테스트 시, 회원가입 후 -> 테스트 API를 이용해 더미 데이터를 생성하고 테스트하시면 됩니다.**
+#
 * **굵은 글씨**로 표시된 Key는 필수값
 * 사용자 인증은 JWT를 이용
     - Header의 Authorization Key에 JWT <your_token>를 추가하여 request
     - ex) JWT eyJ0eXAiOiJKV1QiLCJh
     - 관련 문서: [Django REST framework JWT](http://getblimp.github.io/django-rest-framework-jwt/)
     - 회원 가입, 로그인 API 외에 모든 API는 Authenticate required
+
+
 ## API 목록
 * 로그인 API
 * 차종 검색 필터 목록 API 
@@ -114,22 +118,22 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 [
     {
         "id": 1,
-        "name": "현대",
+        "brand_name": "현대",
         "car_count": 2
     },
     {
         "id": 2,
-        "name": "기아",
+        "brand_name": "기아",
         "car_count": 0
     },
     {
         "id": 3,
-        "name": "벤츠",
+        "brand_name": "벤츠",
         "car_count": 0
     },
     {
         "id": 4,
-        "name": "르노삼성",
+        "brand_name": "르노삼성",
         "car_count": 6
     }
 ]
@@ -150,12 +154,12 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 [
     {
         "id": 1,
-        "name": "그랜저",
+        "kind_name": "그랜저",
         "car_count": 0
     },
     {
         "id": 2,
-        "name": "소나타",
+        "kind_name": "소나타",
         "car_count": 2
     }
 ]
@@ -167,7 +171,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 `GET /cars/search/`
 
   * Params
-    + **name**: kind name (ex. 소나타)
+    + **kind**: kind name (ex. 소나타)
   * Header
     + **Authorization**: JWT <your_token>
 
@@ -177,7 +181,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 [
     {
         "id": 1,
-        "name": "소나타 2.0",
+        "model_name": "소나타 2.0",
         "car_count": 2
     }
 ]
@@ -205,7 +209,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
       + 등록되는 첫 번째 사진은 대표사진(represent=True)으로 설정
       + 이미지들은 /media/cars/해당 오브젝트 생성일/ 파일에 저장됨
 
-- Success Response</br>
+- Response</br>
 //status: HTTP 201 Created
 ```
 {
@@ -270,7 +274,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 `GET /cars/`
 
   * Params
-    + model: model name or None (ex. sm5)
+    + model: model name or None (ex. sm5) (model에 속한 Car만을 보고 싶을 경우는 필수 필드)
     + ordering: reverse or None 
     + **page**: page number
   * Header
@@ -284,9 +288,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ```
 [
     {
+        "id": 4,
         "status": "ongoing",
         "time_remaining": "7:18:16",
-        "id": 4,
         "representative_image": {
             "id": 15,
             "image": "/media/cars/2019-04-09/A.png",
