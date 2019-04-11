@@ -7,7 +7,7 @@ class BrandAdmin(admin.ModelAdmin):
     
     list_display = (
         'id',
-        'name',
+        'brand_name',
         'car_count',
     )
 
@@ -17,7 +17,7 @@ class KindAdmin(admin.ModelAdmin):
     
     list_display = (
         'id',
-        'name',
+        'kind_name',
         'car_count',
     )
 
@@ -27,7 +27,7 @@ class ModelAdmin(admin.ModelAdmin):
     
     list_display = (
         'id',
-        'name',
+        'model_name',
         'car_count',
     )
 

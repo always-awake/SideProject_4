@@ -18,7 +18,7 @@ class BrandSerializer(serializers.ModelSerializer):
         model = models.Brand
         fields = (
             'id',
-            'name',
+            'brand_name',
             'car_count',
             )
 
@@ -28,7 +28,7 @@ class KindSerializer(serializers.ModelSerializer):
         model = models.Kind
         fields = (
             'id',
-            'name',
+            'kind_name',
             'car_count',
             )
 
@@ -38,7 +38,7 @@ class ModelSerializer(serializers.ModelSerializer):
         model = models.Model
         fields = (
             'id',
-            'name',
+            'model_name',
             'car_count',
         )
 
@@ -78,8 +78,8 @@ class CarDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Car
         fields = (
+            'id',            
             'status',
-            'id',
             'time_remaining',
             'brand',
             'kind',
@@ -100,9 +100,9 @@ class CarListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Car
         fields = (
+            'id',
             'status',
             'time_remaining',
-            'id',
             'representative_image',
             'kind',
             'model',

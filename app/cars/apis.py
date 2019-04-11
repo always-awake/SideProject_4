@@ -37,7 +37,7 @@ class CarCreateView(APIView):
         if len(car_images) < 5:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         model_name = request.data.get('model')
-        found_model = get_object_or_404(models.Model, name=model_name)
+        found_model = get_object_or_404(models.Model, model_name=model_name)
         serializer = serializers.CarSerializer(data=request.data, context={'images': car_images}, partial=True)
         if serializer.is_valid():
             saved_car = serializer.save(owner=user, model=found_model)
@@ -83,7 +83,7 @@ class CarListView(APIView):
             elif ordering == 'reverse':
                 cars = models.Car.objects.filter(Q(status='ongoing') | Q(status='end')).reverse()
         else:
-            found_model = models.Model.objects.get(name=model_name)
+            found_model = models.Model.objects.get(model_name=model_name)
             if ordering is None:
                 cars = models.Car.objects.filter(Q(status='ongoing') | Q(status='end')).filter(Q(model=found_model))
             elif ordering == 'reverse':
@@ -108,12 +108,12 @@ class SearchView(APIView):
             serializer = serializers.BrandSerializer(brands, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         elif brand_name and kind_name is None:
-            brand = models.Brand.objects.get(name=brand_name)
+            brand = models.Brand.objects.get(brand_name=brand_name)
             kinds = models.Kind.objects.filter(brand=brand)
             serializer = serializers.KindSerializer(kinds, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         elif brand_name is None and kind_name:
-            kind = models.Kind.objects.get(name=kind_name)
+            kind = models.Kind.objects.get(kind_name=kind_name)
             car_models = models.Model.objects.filter(kind=kind)
             serializer = serializers.ModelSerializer(car_models, many=True)
             return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -137,7 +137,7 @@ class TestView(APIView):
                 brand_name_list.append(brand.value) 
         for brand_name in brand_name_list:
             brand = models.Brand()
-            brand.name = brand_name
+            brand.brand_name = brand_name
             brand.save()
         
         # 차종(kind)등록
@@ -151,10 +151,10 @@ class TestView(APIView):
         for brand_kind in brand_kind_list:
             if brand_kind[1] not in kind_list:
                 kind_list.append(brand_kind[1])
-                brand = models.Brand.objects.get(name=brand_kind[0])
+                brand = models.Brand.objects.get(brand_name=brand_kind[0])
                 kind = models.Kind()
                 kind.brand = brand
-                kind.name = brand_kind[1]
+                kind.kind_name = brand_kind[1]
                 kind.save()        
 
         # 모델(model)등록
@@ -166,10 +166,10 @@ class TestView(APIView):
             kind_model_list.append((kind, model))
         del kind_model_list[0]
         for kind_model in kind_model_list:
-            kind = models.Kind.objects.get(name=kind_model[0])
+            kind = models.Kind.objects.get(kind_name=kind_model[0])
             model = models.Model()
             model.kind = kind
-            model.name = kind_model[1]
+            model.model_name = kind_model[1]
             model.save()
             model_list.append(kind_model[1])
         car_data.close()
@@ -183,7 +183,7 @@ class TestView(APIView):
             mileage_list = ['25000', '10000', '2000','6500']
             address_list = ['서울 영등포구', '서울 관악구', '서울 종로구', '서울 강남구']
             color_list = ['흰색', '검정', '은색', '쥐색', '빨강색', '노랑색']
-            model = models.Model.objects.get(name=random.choice(model_list))
+            model = models.Model.objects.get(model_name=random.choice(model_list))
             car = models.Car()
             car.owner = owner
             car.model = model

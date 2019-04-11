@@ -16,7 +16,7 @@ class TimeStampedModel(models.Model):
 
 class Brand(TimeStampedModel):
     """ Brand Model """
-    name = models.CharField(max_length=50)
+    brand_name = models.CharField(max_length=50)
 
     @property
     def car_count(self):
@@ -27,12 +27,12 @@ class Brand(TimeStampedModel):
         return car_count
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.brand_name}'
 
 
 class Kind(TimeStampedModel):
     """ Kind Model """
-    name = models.CharField(max_length=50)
+    kind_name = models.CharField(max_length=50)
     brand = models.ForeignKey(Brand, related_name='kinds', on_delete=models.CASCADE)
 
     @property
@@ -44,12 +44,12 @@ class Kind(TimeStampedModel):
         return car_count
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.kind_name}'
 
 
 class Model(TimeStampedModel):
     """ Model Model """
-    name = models.CharField(max_length=50)
+    model_name = models.CharField(max_length=50)
     kind = models.ForeignKey(Kind, related_name='models', on_delete=models.CASCADE)
 
     @property
@@ -57,7 +57,7 @@ class Model(TimeStampedModel):
         return self.cars.all().count()
     
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.model_name}'
 
 
 class Car(TimeStampedModel):
@@ -149,4 +149,4 @@ class Image(TimeStampedModel):
     represent = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return f'{self.car.brand}/{self.car.model}'
+        return f'{self.car.id}-{self.car.model}'
