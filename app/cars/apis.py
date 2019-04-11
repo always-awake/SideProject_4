@@ -46,18 +46,21 @@ class CarCreateView(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request, car_id):
-        found_car = get_object_or_404(models.Car, id=car_id, status='waiting')
-        if found_car.status == 'waiting':
-            found_car.status = 'ongoing'
+        if request.user.is_superuser:
+            found_car = get_object_or_404(models.Car, id=car_id, status='waiting')
+            if found_car.status == 'waiting':
+                found_car.status = 'ongoing'
 
-            now = datetime.datetime.now().replace(tzinfo=KST)
-            found_car.auction_start_time = now
-            forty_eight_hour_later = now + datetime.timedelta(hours=48)
-            found_car.auction_end_time = forty_eight_hour_later.replace(tzinfo=KST)
-            found_car.save()
-            return Response(status=status.HTTP_200_OK)
+                now = datetime.datetime.now().replace(tzinfo=KST)
+                found_car.auction_start_time = now
+                forty_eight_hour_later = now + datetime.timedelta(hours=48)
+                found_car.auction_end_time = forty_eight_hour_later.replace(tzinfo=KST)
+                found_car.save()
+                return Response(status=status.HTTP_200_OK)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 class CarDetailView(APIView):
 
