@@ -9,4 +9,6 @@ urlpatterns = [
     path('<int:car_id>/', apis.CarDetailView.as_view(), name='car_detail'),
     path('<int:car_id>/approval/', apis.CarCreateView.as_view(), name='car_modify_status'),
     path('search/', apis.SearchView.as_view(), name='search'),
+
+    path('test/', apis.TestView.as_view(), name='test'),
 ]
