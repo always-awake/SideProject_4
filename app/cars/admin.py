@@ -59,4 +59,5 @@ class ImageAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'car',
+        'represent',
     )
