@@ -7,8 +7,14 @@ API Documentation
     - 관련 문서: [Django REST framework JWT](http://getblimp.github.io/django-rest-framework-jwt/)
     - 회원 가입, 로그인 API 외에 모든 API는 Authenticate required
 ## API 목록
-* User
-* Car
+* 로그인 API
+* 차종 검색 필터 목록 API 
+* 차량 등록 API
+* 경매 승인 API
+* 차량 목록 API
+* 차량 상세 API
+* 사용된 데코레이터 설명
+* 테스트 API
 
 ## 로그인 API
 ### Sign up(Registration)
@@ -17,12 +23,12 @@ API Documentation
 `POST /users/registration/`
 
   * Body
-    + **username**: 이미림
-    + **password1**: admin12345
-    + **password2**: admin12345
-    + email: leemirim@gmail.com
+    + **username**: user name (ex. 이미림)
+    + **password1**: user password 
+    + **password2**: user password (비밀번호 재확인을 위함)
+    + email: user email
 
-- Success Response</br>
+- Response</br>
 //status: HTTP 201 Created
 ```
 {
@@ -38,15 +44,15 @@ API Documentation
 ```
 
 ### Login
-> 로그인
+> 로그인(토큰 생성)
 - Request</br>
 `POST /users/login/`
 
   * Body
-    + **username**: 이미림
-    + **password**: admin12345
+    + **username**: user name
+    + **password**: user password
 
-- Success Response</br>
+- Response</br>
 //status: HTTP 200 OK
 ```
 {
@@ -69,7 +75,7 @@ API Documentation
   * Header
     + **Authorization**: JWT <your_token>
 
-- Success Response</br>
+- Response</br>
 
 ```
 {
@@ -92,7 +98,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 > 2. Brand(브랜드/제조사) > kind(차종/등급) > model(모델) </br>
 > 3. car_count는 해당 브랜드/차종/모델에 속해있는 차량의 수
 
-### Brand List 검색
+### Brand List search
 - Request</br>
 `GET /cars/search/`
 
@@ -129,7 +135,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ]
 ```
 
-### Kind List 검색
+### Kind List search
 - Request</br>
 `GET /cars/search/`
 
@@ -138,7 +144,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
   * Header
     + **Authorization**: JWT <your_token>
 
-- Success Response</br>
+- Response</br>
 //status: HTTP 200 OK
 ```
 [
@@ -156,7 +162,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ```
 
 
-### Model List 검색
+### Model List search
 - Request</br>
 `GET /cars/search/`
 
@@ -165,7 +171,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
   * Header
     + **Authorization**: JWT <your_token>
 
-- Success Response</br>
+- Response</br>
 //status: HTTP 200 OK
 ```
 [
@@ -180,16 +186,17 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 ## 차량 등록 API
 ### Car Create API
 > 자동차 등록 (차량이 등록되면 상태는 기본으로 승인 대기(status=waiting)입니다.)
+> model list는 'Model List 검색' API로 불러올 수 있음 (Model에 등록되지 않은 model로 Car 생성 불가)
 - Requeast</br>
 `POST /cars/new/`
 
   * Header
     + **Authorization**: JWT <your_token>
   * Body 
-    - **model**: model name (ex. 소나타 2.0)
+    - **model**: model name (ex. 소나타 2.0) 
     - **year**: yyyy-mm-dd 형식 (ex. 2018-12-25)
     - **fuel_type**: lpg, 휘발유, 디젤, 하이브리드, 전기, 바이퓨얼 중 하나
-    - **transmission_type**: 오토, 수동
+    - **transmission_type**: 오토, 수동 중 하나
     - **color**: color (ex. 은색)
     - **mileage**: mileage (ex. 25000)
     - **address**: address (ex. 서울 관악구)
@@ -241,6 +248,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ## 경매 승인 API
 > car_id를 갖고 있는 Car 오브젝트가 있어야 하고, 해당 Car 오브젝트의 status의 값이 'waiting' 이어야 합니다.
+> superuser의 권한을 갖고 있어야 수행됩니다. 그 외의 유저가 request하면, UNAUTHORIZED 응답을 얻습니다.
 - Request</br>
 `PUT /cars/:Car_Id/approval/`
 
@@ -252,21 +260,22 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ## 차량 목록 API
 ### Car List API
-> 1. 기본적으로 status가 'ongoing(경매 진행)', 'end(경매 종료)'인 자동차(Car) 리스트를 '경매 시작 시간'을 기준으로 보여줍니다.
-> 2. model params가 존재한다면, 검색 필터, 순서에 맞는 자동차(Car) 리스트를 보여줍니다. 
+> 1. 기본적으로 status가 'ongoing(경매 진행)', 'end(경매 종료)'인 자동차(Car) 리스트를 '경매 시작 시간'을 기준으로 정렬하여 보여줍니다.
+> 2. model params가 존재한다면, 검색 필터(모델에 속한 Car), 순서(정순, 역순)에 맞는 자동차(Car) 리스트를 보여줍니다. 
 > 3. ordering params가 reverse 값을 갖고 있다면, 역순 리스트를 보여줍니다.
-> 4. 페이지네이션을 지원: 한 페이지에 최대 16개의 자동차(Car)을 보여줍니다.
+> 4. 페이지네이션을 지원: 한 페이지에 최대 16개의 자동차(Car)을 보여줍니다. page params에 원하는 페이지 번호를 입력하여 요청합니다.
 > 5. 차종 검색 필터 목록 API와 함께 사용하면 필터링 기능이 가능합니다.
 
 - Request</br>
 `GET /cars/`
 
   * Params
-    + model: model name or None (ex. 소나타 2.0)
+    + model: model name or None (ex. sm5)
     + ordering: reverse or None 
     + **page**: page number
   * Header
     + **Authorization**: JWT <your_token>
+
 - Response</br>
 * Params
   - page:1
@@ -298,6 +307,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
         "address": "서울 신도림"
     }
 ]
+
 ```
 ## 차량 상세 API
 - Request</br>
@@ -310,8 +320,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 //status: HTTP 200 OK
 ```
 {
-    "status": "ongoing",
     "id": 4,
+    "status": "ongoing",
     "time_remaining": "7:4:5",
     "brand": {
         "id": 4,
@@ -379,3 +389,23 @@ def check_car_status(func):
 ```
 * 경매 승인 후, 48시간 후에 경매가 자동으로 종료되어야 하기 때문에 time_remaining(경매 남은 시간) 필드가 보여거나, 필요한 요청을 할 때마다 check_car_status 데코레이터 호출
 * 현재 시간과 status='ongoing'인 Car의 auction_end_time 값을 비교하여 status 값을 변경해준다.
+
+-------------
+## 테스트 API
+> 1. 테스트를 위해 car_data폴더 속, 엑셀 데이터를 이용해 브랜드(Brand), 차종(Kind), 모델(Model) object 생성
+> 2. Car object를 생성할 때, 각 필드는 랜덤으로 선택된 값으로 설정
+> 3. Image object의 image필드는 모두 media/tests/PRND.png로 설정
+> 4. 500개의 Car object를 생성
+> 5. 200개 Car object는 '경매 종료 시간(auction_end_time)'을 현재 시간의 1분 후로 지정하여, 1분 후에 자동으로 status = 'end' 설정
+> 6. 200개 Car object는 '경매 시작 시간(auction_start_time)'을 현재 시간의 1분 전으로 지정하고, status = 'ongoing' 설정 (경매 종료된 차량이 경매 진행중인 차량보다 경매 승인이 더 빠를 것이라 가정)
+> 7. 나머지 100개는 어떠한 처리 x -> status = 'waiting' 기본으로 설정
+
+- Request</br>
+`POST /cars/test/`
+
+  * Header
+    + **Authorization**: JWT <your_token>
+
+- Response</br>
+//status: HTTP 200 OK
+
