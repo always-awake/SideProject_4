@@ -165,3 +165,9 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 SITE_ID = 1
+
+# JWT_AUTH 설정
+import datetime
+JWT_AUTH = { 
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1), 
+}
