@@ -1,6 +1,5 @@
 API Documentation
 =================
-#
 * **굵은 글씨**로 표시된 Key는 필수값
 * 사용자 인증은 JWT를 이용
     - Header의 Authorization Key에 JWT <your_token>를 추가하여 request
